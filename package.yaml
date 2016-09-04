@@ -1,0 +1,15 @@
+name: servant-request
+version: "0.1"
+
+dependencies:
+  - base
+
+tests:
+  spec:
+    main: Spec.hs
+    source-dirs:
+      - test
+    dependencies:
+      - hspec
+
+library: {}
