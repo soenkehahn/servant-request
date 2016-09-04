@@ -3,6 +3,14 @@ version: "0.1"
 
 dependencies:
   - base
+  - servant
+  - string-conversions
+  - bytestring
+  - text
+  - http-api-data
+
+ghc-options:
+  -itest -Wall -fno-warn-name-shadowing
 
 tests:
   spec:
@@ -11,5 +19,8 @@ tests:
       - test
     dependencies:
       - hspec
+      - servant-request
 
-library: {}
+library:
+  source-dirs:
+    - src
