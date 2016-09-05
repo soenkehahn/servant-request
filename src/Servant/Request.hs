@@ -60,10 +60,10 @@ instance (KnownSymbol name, ToHttpApiData param, HasRequests api) =>
   HasRequests (QueryParam name param :> api) where
 
   type Requests (QueryParam name param :> api) =
-    param -> Requests api
+    Maybe param -> Requests api
   mkRequests Proxy f param =
     mkRequests api
-      (addQueryParam name param . f)
+      (maybe id (addQueryParam name) param . f)
     where
       api :: Proxy api
       api = Proxy
