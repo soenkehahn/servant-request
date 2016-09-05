@@ -13,7 +13,7 @@ library
   ghc-options: -itest -Wall -fno-warn-name-shadowing
   build-depends:
       base
-    , servant
+    , servant == 0.8.*
     , string-conversions
     , bytestring
     , text
@@ -31,7 +31,7 @@ test-suite spec
   ghc-options: -itest -Wall -fno-warn-name-shadowing
   build-depends:
       base
-    , servant
+    , servant == 0.8.*
     , string-conversions
     , bytestring
     , text

@@ -3,7 +3,7 @@ version: "0.1"
 
 dependencies:
   - base
-  - servant
+  - servant == 0.8.*
   - string-conversions
   - bytestring
   - text

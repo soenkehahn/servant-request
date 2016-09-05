@@ -9,6 +9,7 @@ module Servant.Request (
   requests,
 
   Request(..),
+  dumpRequest,
   ) where
 
 import           Data.Proxy
@@ -37,11 +38,15 @@ instance ReflectMethod method =>
     method = reflectMethod (Proxy :: Proxy method)
   }
 
-instance forall api path . (HasRequests api) =>
+instance forall api path . (KnownSymbol path, HasRequests api) =>
   HasRequests ((path :: Symbol) :> api) where
 
   type Requests (path :> api) = Requests api
-  mkRequests Proxy = mkRequests (Proxy :: Proxy api)
+  mkRequests Proxy f =
+    mkRequests (Proxy :: Proxy api)
+      (appendPath (cs path) . f)
+    where
+      path = symbolVal (Proxy :: Proxy path)
 
 instance (KnownSymbol name, ToHttpApiData param, HasRequests api) =>
   HasRequests (QueryParam name param :> api) where
