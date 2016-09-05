@@ -1,5 +1,6 @@
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE TypeOperators #-}
@@ -25,7 +26,8 @@ import           Servant.Request.Internal
 class HasRequests api where
   type Requests api :: *
 
-  mkRequests :: Proxy api -> (Request -> Request) -> Requests api
+  mkRequests :: Proxy api -> (forall a . Request a -> Request a)
+    -> Requests api
 
 requests :: HasRequests api => Proxy api -> Requests api
 requests proxy = mkRequests proxy id
@@ -41,7 +43,7 @@ instance (HasRequests a, HasRequests b) =>
 instance ReflectMethod method =>
   HasRequests (Verb (method :: StdMethod) statusCode contentTypes result) where
 
-  type Requests (Verb method statusCode contentTypes result) = Request
+  type Requests (Verb method statusCode contentTypes result) = Request result
   mkRequests Proxy f = f $ emptyRequest{
     method = reflectMethod (Proxy :: Proxy method)
   }

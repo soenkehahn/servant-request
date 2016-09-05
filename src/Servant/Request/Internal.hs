@@ -8,21 +8,21 @@ import           Data.String.Conversions
 import           Data.Text hiding (map)
 import           Web.HttpApiData
 
-data Request
+data Request result
   = Request {
     method :: ByteString,
     path :: [ByteString],
     queryParams :: [(ByteString, Text)]
   }
 
-emptyRequest :: Request
+emptyRequest :: Request result
 emptyRequest = Request {
   method = error "method not initialized (fixme?)",
   path = [],
   queryParams = []
 }
 
-appendPath :: ByteString -> Request -> Request
+appendPath :: ByteString -> Request result -> Request result
 appendPath segment request = request{
   path = path request ++ [segment]
 }
@@ -31,7 +31,8 @@ renderPath :: [ByteString] -> ByteString
 renderPath segments =
   "/" <> Data.ByteString.intercalate "/" segments
 
-addQueryParam :: ToHttpApiData a => ByteString -> a -> Request -> Request
+addQueryParam :: ToHttpApiData param =>
+  ByteString -> param -> Request result -> Request result
 addQueryParam name param request = request{
   queryParams = (name, toQueryParam param) : queryParams request
 }
@@ -42,7 +43,7 @@ renderQueryParams params =
   where
     inner (key, value) = key <> "=" <> cs value
 
-dumpRequest :: Request -> Text
+dumpRequest :: Request result -> Text
 dumpRequest (Request method path queryParams) =
   cs method
   <> " " <> cs (renderPath path)

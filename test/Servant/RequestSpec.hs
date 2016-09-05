@@ -39,5 +39,5 @@ type Api =
 api :: Proxy Api
 api = Proxy
 
-withQueryParam :: Maybe Int -> Request
+withQueryParam :: Maybe Int -> Request String
 withQueryParam :<|> _ = requests api
