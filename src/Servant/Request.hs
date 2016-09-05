@@ -30,6 +30,14 @@ class HasRequests api where
 requests :: HasRequests api => Proxy api -> Requests api
 requests proxy = mkRequests proxy id
 
+instance (HasRequests a, HasRequests b) =>
+  HasRequests (a :<|> b) where
+
+  type Requests (a :<|> b) = Requests a :<|> Requests b
+  mkRequests Proxy f =
+    mkRequests (Proxy :: Proxy a) f :<|>
+    mkRequests (Proxy :: Proxy b) f
+
 instance ReflectMethod method =>
   HasRequests (Verb (method :: StdMethod) statusCode contentTypes result) where
 

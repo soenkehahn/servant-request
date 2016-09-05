@@ -33,10 +33,11 @@ spec = do
         "GET /foo?bar=42"
 
 type Api =
-  "foo" :> QueryParam "bar" Int :> Get '[JSON] String
+  "foo" :> QueryParam "bar" Int :> Get '[JSON] String :<|>
+  "bar" :> Get '[JSON] String
 
 api :: Proxy Api
 api = Proxy
 
-withQueryParam :: Requests Api
-withQueryParam = requests api
+withQueryParam :: Int -> Request
+withQueryParam :<|> _ = requests api
