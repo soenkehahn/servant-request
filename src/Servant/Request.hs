@@ -71,3 +71,11 @@ instance (KnownSymbol name, ToHttpApiData param, HasRequests api) =>
       api = Proxy
 
       name = cs $ symbolVal (Proxy :: Proxy name)
+
+instance (ToHttpApiData c, HasRequests api) =>
+  HasRequests (Capture name c :> api) where
+
+  type Requests (Capture name c :> api) = c -> Requests api
+  mkRequests Proxy f captureValue =
+    mkRequests (Proxy :: Proxy api)
+      (appendPath (cs $ toUrlPiece captureValue) . f)
